@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='dashboard.css')}}">
+</head>
+<body>
+    
+    <div class="wrapper">
+        <div class="form">
+            <form  id="form" name="form" onsubmit="dogrula()" method="post">
+                <div class="title">Welcome</div>
+                <div class="subtitle">Add Publication and Researcher Informations</div>
+                <div class="input-container ic1">
+                  <input id="ID" class="input" type="text" placeholder=" " name="ID"/>
+                  <div class="cut"></div>
+                  <label for="ID" class="placeholder">Researcher ID*</label>
+                </div>
+                <div class="input-container ic2">
+                  <input id="name" class="input" type="text" placeholder=" " name="name" />
+                  <div class="cut"></div>
+                  <label for="name" class="placeholder">Researcher Name*</label>
+                </div>
+                <div class="input-container ic2">
+                  <input id="surname" class="input" type="text" placeholder=" " name="surname" />
+                  <div class="cut cut-short"></div>
+                  <label for="surname" class="placeholder">Researcher Surname*</>
+                </div>
+                <div class="input-container ic2">
+                  <input id="p_id" class="input" type="text" placeholder=" " name="p_id" />
+                  <div class="cut cut-short"></div>
+                  <label for="p_id" class="placeholder">Publication ID</>
+                </div>
+                <div class="input-container ic2">
+                    <input id="p_name" class="input" type="text" placeholder=" " name="p_name" />
+                    <div class="cut cut-short"></div>
+                    <label for="p_name" class="placeholder">Publication Name</>
+                  </div>
+                  <div class="input-container ic2">
+                    <input id="p_year" class="input" type="text" placeholder=" " name="p_year"/>
+                    <div class="cut cut-short"></div>
+                    <label for="p_year" class="placeholder">Publication Year</>
+                  </div>
+                  <div class="input-container ic2">
+                    <input id="p_place" class="input" type="text" placeholder=" " name="p_place" />
+                    <div class="cut cut-short"></div>
+                    <label for="p_place" class="placeholder">Publication Place</>
+                  </div>
+                  <div class="input-container ic2">
+                    <input id="p_type" class="input" type="text" placeholder=" " name="p_type"/>
+                    <div class="cut cut-short"></div>
+                    <label for="p_type" class="placeholder">Publication Type</>
+                  </div>
+                <button type="text" class="submit">Add Informations</button>
+                <a href="{{ url_for('login') }} " id="go_back"><div class="link"> Previous Page </div></a>
+                
+            </form>
+            
+          </div>
+        <div class="boxes">
+            
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    
+    
+</body>
+
+<script>
+    function dogrula() {
+        var x = document.forms["form"]["ID"].value;
+        var y=document.forms["form"]["name"].value;
+        var z=document.forms["form"]["surname"].value;
+
+        if (x == null || x == "") {
+            alert("You did not enter the ID!!");
+        }
+        else if(y == null || y == ""){
+            alert("You did not enter a name!!");
+        }
+        else if(z == null || z == ""){
+            alert("You did not enter a surname!!");
+        }
+
+    }
+
+    
+
+    </script>
+</html>
+    

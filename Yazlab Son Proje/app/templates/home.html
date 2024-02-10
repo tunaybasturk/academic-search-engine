@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='home.css')}}">
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+          integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+          crossorigin="anonymous"></script>
+          
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    
+<body>
+
+    <div class="navbar" id="nav">
+        <div class="title"><h1>Publication Heaven</h1></div>
+        
+
+        <div class="search">
+            <a href="{{ url_for('login') }}" id="login"> <div class="section0">Admin Login</div> </a>    
+            
+            <form id="form"name="form" method="post" action="/">
+              <input  id="researcher-name" class="input" type="text" placeholder="Search Researcher Name" name="researcher-name" />
+              <input  id="researcher-surname" class="input" type="text" placeholder="Search Researcher Surname" name="researcher-surname" />
+              <input  id="publication-name" class="input" type="text" placeholder="Search Publication Name" name="publication-name" />
+              <input  id="publication-year" class="input" type="text" placeholder="Search Publication Year" name="publication-year" />
+              <button id="search_button" type="submit">Search</button>
+            </form>
+            
+           <a href=""></a>     
+            
+        </div>
+
+  
+    </div>
+
+  <!-- İçerik kısmı   -->
+    <!-- <div id="myP" class="context">
+        <h1>ZORT</h1>
+    </div> -->
+   
+    <div id="getText" style="visibility: hidden;" >
+      INNER TEXT
+    </div>
+
+   
+  
+
+</body>
+<script type="text/javascript">
+  var delete_cards;
+  var size=0;
+  var resarcher_id;
+  var researcher_name;
+  var researcher_surname;
+  var researcher_teammate_name;
+  var who_writed_teammate_surnname;
+  var publication_name_general;
+  var publication_year_general;
+  var publication_place_general;
+  var publication_type_general;
+  var variable=researcher_name;
+  $(document).on('submit','#form',function(e)
+                 {
+    console.log('hello');
+    e.preventDefault();
+    $.ajax({
+      type:'POST',
+      url:'/data',
+      data:{
+        todo:$("#researcher-name").val(),
+        todo2:$("#researcher-surname").val(),
+        todo3:$("#publication-name").val(),
+        todo4:$("#publication-year").val(),
+       
+      },
+      success:function(data)
+      {  
+        size=data.researcher_id.length;
+        researcher_id=data.researcher_id;
+        researcher_name=data.researcher_name;
+        researcher_surname=data.researcher_surname;
+        researcher_teammate=data.researcher_teammate;
+        publication_name_general=data.publication_name_general;
+        publication_year_general=data.publication_year_general;
+        publication_place_general=data.publication_place_general;
+        publication_type_general=data.publication_type_general;
+        teammate_id_general=data.teammate_id_general;
+        console.log("GELEN VERİLERİN BOYUTU:",size);
+        console.log("DATA BU:",data);
+        console.log(typeof(data))
+        createDiv();
+      }
+    })
+  }); 
+
+
+
+  function go_node_page(sayi){
+    window.location.href='{{ url_for("node",table="sayi") }}'.replace("sayi", sayi);
+  }
+  
+
+  function QueryAgain(teammate){
+  
+    var last_space_index=teammate.lastIndexOf(' ');
+    console.log(teammate.substring(0, last_space_index));
+    console.log(teammate.substring(last_space_index,last_space_index.length));
+    var selected_name=document.getElementById("researcher-name").value=teammate.substring(0, last_space_index);
+    var selected_surname=document.getElementById("researcher-surname").value=teammate.substring(last_space_index+1,last_space_index.length);
+    document.getElementById("publication-name").value="";
+    document.getElementById("publication-year").value="";
+    $("#search_button").click();
+    document.getElementById("researcher-name").value="";
+    document.getElementById("researcher-surname").value="";
+    //alert(selected_name+" "+selected_surname+" added to Input,Just Click to Search Button!");
+
+    
+  }
+
+
+  
+  
+  function createDiv() { 
+    const boxes = document.querySelectorAll('.cards');
+    const btn=document.querySelectorAll('.btn');
+    boxes.forEach(box => {
+      box.remove();
+    });
+   
+    for(var i=0;i<size;i++){
+   
+    let div = document.createElement('div');
+    div.innerText = document.getElementById('getText').innerText;
+    div.id="card"+i;
+    div.innerHTML="<a href='javascript:go_node_page("+researcher_id[i]+");''>"+"<h1 id='title'style='color:black;margin-right: 15px'>"+researcher_name[i]+" "+researcher_surname[i]+"</h1></a> <br />"+"<br />"+"<br />"+"<br />"+"RESEARCHER ID:"+researcher_id[i]+"<br />"+"RESEARCHER NAME:"+researcher_name[i]+"<br />"+"RESEARCHER SURNAME:"+researcher_surname[i]+"<br />"+"RESEARCHER PUBLICATON NAME:"+publication_name_general[i]+"<br />"+"RESEARCHER PUBLICATON YEAR:"+publication_year_general[i]+"<br />"+"RESEARCHER PUBLICATON PLACE:"+publication_place_general[i]+"<br />"+"RESEARCHER PUBLICATON TYPE:"+publication_type_general[i]+"<br />"+"RESEARCHER TEAMMATES NAME:"+"<br />"+"<br />"+"<br />"+"<br />"+"<br />"
+    
+    
+    
+    
+    for(var j=0;j<researcher_teammate[i].length;j++){
+      holder=teammate_id_general[i][j];
+      holder2=researcher_teammate[i][j];
+      console.log(holder2);
+      console.log(typeof(holder2));
+      div.innerHTML += `<br /><a href='#nav'id='teammate'style='margin-left: 25px'onclick="QueryAgain('${holder2}')">${researcher_teammate[i][j]}</a>&nbsp;`;
+    }
+    div.className="cards";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+    div.style.height="300px";
+    div.style.border="4px solid black";
+    div.style.background="#E2EFF3";
+    div.style.display= "flex";
+    div.style.alignItems="center";
+    div.style.justifyContent="center";
+    div.style.marginLeft="200px";
+    div.style.marginRight="200px";
+    div.style.marginTop="50px";
+    document.body.appendChild(div);
+    console.log(researcher_teammate_name);
+   
+    
+    }
+    const countAll = document.querySelectorAll('.cards').length;
+    console.log("COUNT ALL:",countAll);
+    function getIdFormA(obj) {
+      window.alert(window.location.href += "?id=" + obj);
+    }
+    
+    
+    
+  }
+  
+  
+  
+
+
+</script>
+
+
+
+
+</html>

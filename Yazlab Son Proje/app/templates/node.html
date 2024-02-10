@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Document</title>
+    <script
+    type="text/javascript"
+    src="../static/vis.js"
+  ></script>
+  <style type="text/css">
+    #mynetwork {
+      width: 780px;
+      height: 520px;
+      border: 4px solid black;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #go_back{
+      margin-left: auto;
+      margin-right: auto;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+</head>
+<body>
+  <h1 id="title" style="text-align:center;"></h1>
+    <div id="mynetwork"></div>
+
+    <h2 id="eventSpanHeading" style="text-align:center;"></h2>
+    <pre id="eventSpanContent"style="text-align:center;"></pre>
+    <button id="btn" onclick="doFunction()" type="submit" style="visibility: hidden;">Click</button>
+    <button type="button" id="go_back" onclick="go_back()">Go Back</button>
+</body>
+<script type="text/javascript">
+
+  function go_back(){
+    location.href = "/";
+  }
+  var DIR = "../static/";
+ 
+
+  var id=window.location.href.split("=")[1];
+  var data;
+  var r_name,r_publication_name,r_surname,p_publication_id,p_publication_name,p_publication_place,p_publication_type,p_publication_year,t_type_id,t_type_place,t_type_type,r_teammate_id,r_teammate_name,r_teammate_publication_name,r_teammate_surname;
+  var r_node_id,p_node_id,type_node_id,r_teammate_node_id,teammate_p_node_id_general;
+  var all_researcher_node_id=[],all_researcher_r_id=[],all_researcher_name_surname=[],all_researcher_publication_name=[];
+  var nodes;
+  $(document).ready(function() {
+    $("#btn").click();
+});
+  function doFunction()
+  {
+
+      $.ajax({
+          url: '{{ url_for("node_data") }}',
+          type: 'POST',
+          data: {
+              ID: id
+          },
+          success: function (data_dict) {
+            
+            
+            r_name=data_dict.r_name
+            r_publication_name=data_dict.r_publication_name
+            r_surname=data_dict.r_surname
+            p_publication_id=data_dict.p_publication_id
+            p_publication_name=data_dict.p_publication_name
+            p_publication_place=data_dict.p_publication_place
+            p_publication_type=data_dict.p_publication_type
+            p_publication_year=data_dict.p_publication_year
+            t_type_id=data_dict.t_type_id
+            t_type_place=data_dict.t_type_place
+            t_type_type=data_dict.t_type_type
+            r_teammate_id=data_dict.r_teammate_id
+            r_teammate_name=data_dict.r_teammate_name
+            r_teammate_publication_name=data_dict.r_teammate_publication_name
+            r_teammate_surname=data_dict.r_teammate_surname
+            r_node_id=data_dict.r_node_id
+            p_node_id=data_dict.p_node_id
+            type_node_id=data_dict.type_node_id
+            r_teammate_node_id=data_dict.r_teammate_node_id
+            teammate_p_node_id_general=data_dict.teammate_p_node_id_general
+            console.log(r_node_id);
+            document.getElementById('title').innerHTML = r_name+" "+r_surname+"'s GRAPH";
+            for(var i=0;i<r_teammate_node_id.length+1;i++){
+              if(i==0){
+                all_researcher_name_surname.push(r_name+" "+r_surname);
+                all_researcher_node_id.push(r_node_id);
+                all_researcher_r_id.push(id);
+              }
+              else{
+                all_researcher_node_id.push(r_teammate_node_id[i-1])
+                all_researcher_name_surname.push(r_teammate_name[i-1]+" "+r_teammate_surname[i-1]);
+                all_researcher_r_id.push(r_teammate_id[i-1]);
+
+              }
+            }
+            for(var i=0;i<r_teammate_publication_name.length+1;i++){
+                if(i==0){
+                  all_researcher_publication_name[i]=r_publication_name;
+                }
+                else{
+                  all_researcher_publication_name[i]=r_teammate_publication_name[i-1];
+                }
+            }
+            console.log("HEY BOYS!!",all_researcher_node_id);
+            console.log("HEY GIRLS!!",all_researcher_name_surname);
+            console.log("HEY EVERYONE!",all_researcher_publication_name);
+            nodes = new vis.DataSet([]);
+            for(var i=0;i<1;i++){
+              nodes.add([
+            { id: r_node_id ,label: r_name+" "+r_surname,title:"name:"+r_name+",surname:"+r_surname+",researcher_id:",color:"#66F9EE",image:DIR+"person.jpg",shape:"circularImage"},
+     
+              ]);
+            }
+            for(var i=0;i<p_publication_id.length;i++){
+              nodes.add([
+            { id: p_node_id[i] ,label: p_publication_name[i],title:"name:"+r_name+",surname:"+r_surname+",researcher_id:"+id,color:'#5EF00F',image:DIR+"article3.jpg",shape:"circularImage"},
+     
+              ]);
+            }
+            for(var i=0;i<t_type_id.length;i++){
+              nodes.add([
+            { id: type_node_id[i] ,label: t_type_type[i],title:"name:"+r_name+",surname:"+r_surname+",researcher_id:"+id,color:'#D49312',image:DIR+"type2.jpg",shape:"circularImage"},
+     
+              ]);
+            }
+
+            for(var i=0;i<r_teammate_id.length;i++){
+              nodes.add([
+            { id: r_teammate_node_id[i] ,label: r_teammate_name[i]+" "+r_teammate_surname[i],title:"name:"+r_name+",surname:"+r_surname+",researcher_id:"+id,color:"#66F9EE",image:DIR+"person.jpg",shape:"circularImage"},
+     
+              ]);
+            }
+
+             // create an array with nodes
+   
+  
+
+   
+   
+  
+   
+
+   // create an array with edges
+   
+   var edges = new vis.DataSet([
+  
+   ]);
+   for(var i=0;i<p_node_id.length;i++){
+    edges.add([
+  { to: r_node_id, from: p_node_id[i] ,label:"PUBLICATION_WRITER",arrows:'from',length:300},
+
+    ]);
+  }
+  for(var i=0;i<p_node_id.length;i++){
+    edges.add([
+  { to: p_node_id[i], from: type_node_id[i] ,label:"PUBLISHED",arrows:'from',length:300 },
+
+    ]);
+  }
+  for(var i=0;i<r_teammate_node_id.length;i++){
+    edges.add([
+  { from:r_node_id, to: r_teammate_node_id[i] ,label:"WORKS_COLLABORATIVELY",arrows: {
+    from: { enabled: true },
+    to: { enabled: true },
+  },length:300},
+  
+
+    ]);
+  }
+
+  for(var i=0;i<r_teammate_node_id.length;i++){
+    for(var j=0;j<teammate_p_node_id_general[i].length;j++){
+      edges.add([
+  { to:r_teammate_node_id[i], from: teammate_p_node_id_general[i][j] ,label:"PUBLICATION_WRITER",arrows:'from',length:300 },
+
+    ]);
+    }
+    
+  }
+   // create a network
+   var container = document.getElementById("mynetwork");
+   var data = {
+     nodes: nodes,
+     edges: edges,
+   };
+
+   var options = {
+     interaction: { hover: true },
+     manipulation: {
+       enabled: true,
+     },
+     nodes:{shape:"dot"},
+     edges: {
+      font: {
+        size: 10,
+      },
+      shadow: true
+    },
+   };
+
+   var network = new vis.Network(container, data, options);
+
+   network.on("click", function (params) {
+     params.event = "[original event]";
+    
+     for (var i =0 ; i <r_teammate_node_id.length;i++){
+       if(r_teammate_node_id[i]==this.getNodeAt(params.pointer.DOM)){
+         id=r_teammate_id[i];
+         var adress;
+         adress=window.location.href.split("=")[0]+"="+id;
+         console.log(window.location.href);
+         window.open(adress, "_blank");
+       }
+     }
+     
+     console.log(
+       "click event, getNodeAt returns: " +
+         this.getNodeAt(params.pointer.DOM)
+     );
+     console.log("bak girdimm "+params);
+   });
+   network.on("doubleClick", function (params) {
+     params.event = "[original event]";
+   });
+   network.on("oncontext", function (params) {
+     params.event = "[original event]";
+   });
+   network.on("dragStart", function (params) {
+     // There's no point in displaying this event on screen, it gets immediately overwritten
+     params.event = "[original event]";
+   });
+   network.on("dragging", function (params) {
+     params.event = "[original event]";
+     
+   });
+   network.on("dragEnd", function (params) {
+     params.event = "[original event]"; 
+   });
+   network.on("controlNodeDragging", function (params) {
+     params.event = "[original event]";
+   });
+   network.on("controlNodeDragEnd", function (params) {
+     params.event = "[original event]";
+
+   });
+   network.on("zoom", function (params) {
+
+   });
+   network.on("showPopup", function (params) {
+     console.log("PARAMS:",params);
+     var index=all_researcher_node_id.indexOf(params)
+     var index2=p_node_id.indexOf(params);
+     var index3=type_node_id.indexOf(params);
+     console.log("THOR:",index);
+     if(index!=-1){
+      document.getElementById("eventSpanHeading").innerText =
+      all_researcher_name_surname[index];
+     document.getElementById("eventSpanContent").innerText = "\nRESEARCHER ID:"+all_researcher_r_id[index]+"\nPUBLICATONS:"+all_researcher_publication_name[index];
+     }
+     if(index2!=-1){
+      document.getElementById("eventSpanHeading").innerText =
+      p_publication_name[index2];
+      document.getElementById("eventSpanContent").innerText = "PUBLICATION ID:"+p_publication_id[index2]+"\nPUBLICATION PLACE:"+p_publication_place[index2]+"\nPUBLICATION TYPE:"+p_publication_type[index2]+"\nPUBLICATION YEAR:"+p_publication_year[index2];
+     }
+     if(index3!=-1){
+      document.getElementById("eventSpanHeading").innerText =
+      t_type_type[index3];
+      document.getElementById("eventSpanContent").innerText = "TYPE ID:"+t_type_id[index3]+"\nTYPE PLACE:"+t_type_place[index3];
+     }
+    
+   });
+   network.on("showPopup", function () {
+    
+   });
+   network.on("select", function (params) {
+    
+   });
+   network.on("selectNode", function (params) {
+     
+   });
+   network.on("selectEdge", function (params) {
+    
+   });
+   network.on("deselectNode", function (params) {
+    
+   });
+   network.on("deselectEdge", function (params) {
+    
+   });
+   network.on("hoverNode", function (params) {
+    
+   });
+   network.on("hoverEdge", function (params) {
+ 
+   });
+   network.on("blurNode", function (params) {
+   
+   });
+   network.on("blurEdge", function (params) {
+    
+   });
+
+
+          },
+          error: function (response) {
+            alert("I CAN'T SEND");
+          }
+      });
+
+  };
+
+   
+    
+
+
+
+  </script>
+
+
+</html>
